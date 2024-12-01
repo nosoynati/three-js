@@ -24,9 +24,10 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  position: relative;
+  display: grid;
+  flex-direction: column;
   place-items: center;
-  min-width: 320px;
   min-height: 100vh;
 }
 
@@ -36,21 +37,12 @@ h1 {
 }
 
 #app {
-  max-width: 1280px;
+  position: absolute;
   margin: 0 auto;
-  padding: 2rem;
+  top: 0;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
 .logo.vanilla:hover {
   filter: drop-shadow(0 0 2em #f7df1eaa);
 }
