@@ -3,21 +3,29 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { CSS3DRenderer } from "three/addons/renderers/CSS3DRenderer.js";
 
+
 function threeApp() {
-  console.log("ready!");
 
   const scene = new THREE.Scene();
-  // Cambiar el color del fondo de la escena
-  scene.background = new THREE.Color(0x87ceeb); // Color azul cielo
+  scene.background = new THREE.Color("skyblue"); // Color azul cielo
 
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const cameraSettings = {
+    fov: 65,
+    aspect: window.innerWidth / window.innerHeight,
+    near: 0.1,
+    far: 100
+  };
+  const { fov, aspect, near, far} = cameraSettings
+
+  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+  camera.position.set(0,0,10)
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio)
   document.body.appendChild(renderer.domElement);
 
   const controls = new OrbitControls(camera, renderer.domElement);
   const loader = new GLTFLoader();
-  const light = new THREE.SpotLight("#ffffff", 1, 1)
 
   // Añadir figuras
   function createCube(x, y, z, color) {
@@ -45,6 +53,8 @@ function threeApp() {
   scene.add(cube1);
   scene.add(cube2);
   scene.add(sphere1);
+
+
 
   // Cámara y animación
   camera.position.z = 5;
