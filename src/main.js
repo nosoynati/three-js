@@ -1,12 +1,8 @@
-import './style.css'
-// import javascriptLogo from './javascript.svg'
-// import viteLogo from '/vite.svg'
-// import { setupCounter } from './counter.js'
-import threeApp from './components/three.js'
+import { World } from './World/World'
 
-threeApp()
-document.querySelector('#app').innerHTML = `
-  <div class="main">
-    <h1 class="title">Hello you!</h1>
-  </div>
-`
+function main() {
+  const app = document.querySelector("#app")
+  const world = new World(app)
+  world.render()
+}
+main()
