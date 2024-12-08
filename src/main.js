@@ -5,4 +5,4 @@ function main() {
   const world = new World(app)
   world.render()
 }
-main()
+export { main }

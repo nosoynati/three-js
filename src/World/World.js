@@ -15,13 +15,14 @@ class World {
     renderer = createRenderer();
     container.append(renderer.domElement)
 
-    const resizer = new Resizer(container, camera, renderer)
+    
 
     const cube = createCube();
     scene.add(cube)
   }
   render() {
     renderer.render(scene, camera)
+    // const resizer = new Resizer(container, camera, renderer)
   } 
   
 }
