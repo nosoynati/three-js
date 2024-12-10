@@ -16,10 +16,10 @@ function createCube(geom) {
   const cube = new Mesh(geometry, material)
   const baseCube = new Mesh(geom2, materialBase)
   // rotación
-  cube.position.set(2,0,1)
-  cube.rotation.set(-0.5, -0.1, 0.8)
-  baseCube.position.set(-2,0,1)
-  baseCube.rotation.set(-0.5, -0.1, 0.8)
+  cube.position.set(2,0,0)
+  cube.rotation.set(-0.2, -0.1, 0.8)
+  baseCube.position.set(-1,-0.5,1)
+  baseCube.rotation.set(-0.25, -0.1, 0.5)
 
   return {cube, baseCube}
 } 

@@ -15,4 +15,4 @@ class Resizer {
   }
   onResize() { }
 }
-export { Resizer };
+export { Resizer, setSize };
