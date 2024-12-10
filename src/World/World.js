@@ -20,10 +20,15 @@ class World {
     const cube2 = createCube().baseCube;
     const light = createLights();
     scene.add(cube, light, cube2)
+
+    const resizer = new Resizer(camera, container, renderer)
+    resizer.onResize = () => {
+      this.render()
+    }
   }
   render() {
     renderer.render(scene, camera)
-    // const resizer = new Resizer(container, camera, renderer)
+ 
   } 
   
 }
