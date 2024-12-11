@@ -1,7 +1,8 @@
 const setSize = (camera, container, renderer) => {
   camera.aspect = container.clientWidth / container.clientHeight;
-  renderer.setSize = container.clientWidth, container.clientHeight;
   camera.updateProjectionMatrix();
+
+  renderer.setSize = container.clientWidth, container.clientHeight;
   renderer.setPixelRatio = window.devicePixelRatio
 
 }
@@ -15,4 +16,4 @@ class Resizer {
   }
   onResize() { }
 }
-export { Resizer, setSize };
+export { Resizer };
