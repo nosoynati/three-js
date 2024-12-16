@@ -18,9 +18,20 @@ function createCube(geom) {
   // rotación
   cube.position.set(2,0,0)
   cube.rotation.set(-0.2, -0.1, 0.8)
+
   baseCube.position.set(-1,-0.5,1)
   baseCube.rotation.set(-0.25, -0.1, 0.5)
-
+  cube.tick = () => {
+    cube.rotation.x += 0.01;
+    cube.rotation.z += 0.01;
+    cube.rotation.y += 0.01;
+  }
+  baseCube.tick = () => {
+    cube.rotation.x += 0.01;
+    cube.rotation.z += 0.01;
+    cube.rotation.y += 0.01;
+  }
+  
   return {cube, baseCube}
 } 
 export { createCube };
