@@ -1,5 +1,8 @@
 import { Clock } from "three";
 
+// clock.delta mide el tiempo transcurrido desde el último refresh
+const clock = new Clock();
+
 class Loop {
   constructor(camera, scene, renderer) {
     this.camera = camera;
@@ -17,8 +20,10 @@ class Loop {
     this.renderer.setAnimationLoop(null)
   }
   tick(){
+    const delta = clock.getDelta()
+    // console.log(`tiempo transcurrido en ms: ${delta * 1000}`)
     for(let objs of this.updatables){
-      objs.tick();
+      objs.tick(delta);
     }
   }
 }
