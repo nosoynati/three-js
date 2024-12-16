@@ -23,8 +23,9 @@ class World {
     const cube2 = createCube().baseCube;
     const light = createLights();
     loop.updatables.push(cube, cube2)
-    scene.add(cube2)
-    cube2.add(cube, light)
+
+    scene.add(cube2, light)
+    cube2.add(cube)
 
     const resizer = new Resizer(camera, container, renderer)
     // resizer.onResize = () => {
