@@ -2,7 +2,12 @@ import { Color, Scene } from 'three';
 
 function createScene() {
   const scene = new Scene();
-  scene.background = new Color('skyblue');
+  const color = {
+    blue: "#110099",
+    fuccia: "rebecapurple"
+  }
+  scene.background = new Color(color.blue)
+  scene.backgroundBlurriness = 0.4
 
   return scene;
 } 
