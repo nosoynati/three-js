@@ -1,14 +1,19 @@
-import { BoxGeometry, Mesh, MeshBasicMaterial, MathUtils, MeshStandardMaterial } from 'three';
+import { BoxGeometry, Mesh, MeshBasicMaterial, MathUtils, MeshStandardMaterial, TextureLoader } from 'three';
+import { textureLoad } from 'three/tsl';
 
+function createMaterial(color) {
+  const textureLoader = new TextureLoader()
+  const texture = textureLoader.load('/src/assets/textures/uv-test-bw.jpg')
+  const material = new MeshStandardMaterial(color ? { color: color } : {map: texture});
+  console.log(texture.source)
+  return material
+}
 function createCube() {
 
-  const opc = {
-    color: '#ab0d79'
-  }
-  const geometry = new BoxGeometry(1.1,1.1,1.1)
-  const geom2 = new BoxGeometry(1.15, 1.15, 1.15)
-  const materialBase = new MeshStandardMaterial({color: "red"})
-  const material = new MeshStandardMaterial(opc);
+  const geometry = new BoxGeometry(1.1,1.1,1.1);
+  const geom2 = new BoxGeometry(1.15, 1.15, 1.15);
+  const materialBase = createMaterial("purple");
+  const material = createMaterial();
   const cube = new Mesh(geometry, material)
   const baseCube = new Mesh(geom2, materialBase)
   // radians
