@@ -3,7 +3,7 @@ import { textureLoad } from 'three/tsl';
 
 function createMaterial(color) {
   const textureLoader = new TextureLoader()
-  const texture = textureLoader.load('/src/assets/textures/uv-test-bw.jpg')
+  const texture = textureLoader.load('/src/assets/textures/wood-sq.jpg')
   const material = new MeshStandardMaterial(color ? { color: color } : {map: texture});
   console.log(texture.source)
   return material
