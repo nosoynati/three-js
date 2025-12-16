@@ -1,21 +1,34 @@
-const setSize = (camera, container, renderer) => {
-  let ratio = window.devicePixelRatio
-  camera.aspect = container.clientWidth / container.clientHeight;
-  camera.updateProjectionMatrix();
-  renderer.setPixelRatio = window.devicePixelRatio
-  renderer.setSize = container.clientWidth, container.clientHeight;
- 
-
-
-}
 class Resizer {
   constructor(camera, container, renderer) {
-    setSize(camera, container, renderer)
+    // Set initial size
+    this.setSize(camera, container, renderer);
+
     window.addEventListener('resize', () => {
-      setSize(camera, container, renderer);
+      this.setSize(camera, container, renderer);
       this.onResize();
-    })
+    });
   }
-  onResize() { }
+
+  setSize(camera, container, renderer) {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    const canvas = renderer.domElement;
+    const needResize = canvas.width !== width || canvas.height !== height;
+
+    if (needResize) {
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+    }
+
+    return needResize;
+  }
+
+  onResize() {
+  }
 }
+
 export { Resizer };

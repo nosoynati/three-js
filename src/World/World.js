@@ -28,9 +28,9 @@ class World {
     cube2.add(cube)
 
     const resizer = new Resizer(camera, container, renderer)
-    // resizer.onResize = () => {
-    //   this.render()
-    // }
+    resizer.onResize = () => {
+      this.render()
+    }
   }
   render() {
     renderer.render(scene, camera);
