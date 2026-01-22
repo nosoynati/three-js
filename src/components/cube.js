@@ -1,12 +1,10 @@
 import { BoxGeometry, Mesh, MeshBasicMaterial, MathUtils, MeshStandardMaterial, TextureLoader } from 'three';
-import { textureLoad } from 'three/tsl';
 
 function createMaterial(color) {
   const textureLoader = new TextureLoader()
-  const texture = textureLoader.load('./src/assets/textures/wood-sq.jpg')
+  const texture = textureLoader.load('./assets/wood-sq.jpg')
   const material = new MeshStandardMaterial(color ? { color: color } : {map: texture});
-  console.log(texture.source)
-  return material
+   return material
 }
 function createCube() {
 
@@ -23,7 +21,7 @@ function createCube() {
   cube.rotation.set(-0.2, -0.1, 0.8)
 
   baseCube.position.set(0,0,-1)
-  baseCube.rotation.set(-0.25,-0.1,0.1)
+  baseCube.rotation.set(-0.45,-0.1,0.1)
   cube.tick = (delta) => {
     // cube.rotation.x += 0.03;
     // cube.rotation.z += 0.00;
