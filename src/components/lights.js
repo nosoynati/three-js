@@ -1,16 +1,16 @@
-import { DirectionalLight, MathUtils } from "three";
+import { DirectionalLight, AmbientLight, MathUtils } from "three";
 
-function createLights(delta) {
-  const radiansPerSecond = MathUtils.degToRad(60)
+function createLights() {
+  const ambient = new AmbientLight('#ffffff', 1.5);
 
-  const light = new DirectionalLight("#f3f3f3", 8)
-  light.position.set(10, 5, 8)
-  light.rotation.set(0,0,0)
-  light.tick = (delta) => {
-    light.rotation.x += radiansPerSecond * delta
-    light.rotation.y += radiansPerSecond * delta
-    light.rotation.z += (radiansPerSecond * 2) * delta
-  }
-  return light;
+  const directional = new DirectionalLight("#ffffff", 4);
+  directional.position.set(10, 10, 10);
+
+  const radiansPerSecond = MathUtils.degToRad(30);
+  directional.tick = (delta) => {
+    directional.rotation.y += radiansPerSecond * delta;
+  };
+
+  return { ambient, directional };
 }
-export { createLights }
+export { createLights };
