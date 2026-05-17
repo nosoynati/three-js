@@ -1,8 +1,23 @@
+*, *::after, *::before {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+}
+canvas {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -23,39 +38,25 @@ a:hover {
 }
 
 body {
-  margin: 0;
-  position: relative;
-  display: grid;
-  flex-direction: column;
-  place-items: center;
-  min-height: 100vh;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
+
+#app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+} 
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
-#app {
-  position: absolute;
-  margin: 0 auto;
-  top: 0;
-  text-align: center;
-}
-
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-button {
+/* button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -65,14 +66,14 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-button:hover {
+} */
+/* button:hover {
   border-color: #646cff;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 
 @media (prefers-color-scheme: light) {
   :root {
