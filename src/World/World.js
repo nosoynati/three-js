@@ -21,7 +21,7 @@ class World {
     container.append(renderer.domElement);
 
     const { ambient, directional } = createLights();
-    const marbles = createMarbles(125);
+    const marbles = createMarbles(400);
 
     loop.updatables.push(directional, ...marbles);
     scene.add(ambient, directional, ...marbles);
@@ -39,12 +39,12 @@ class World {
     const planeIntersect = new Vector3();
     const offset = new Vector3();
     const cameraDir = new Vector3();
-    let draggedObject = null;
+    const moveDir = new Vector3();
 
-    canvas.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      camera.position.z = Math.max(2, Math.min(30, camera.position.z + e.deltaY * 0.02));
-    }, { passive: false });
+    let draggedMarble = null;
+    let isRotating = false;
+    let yaw = 0;
+    let pitch = 0;
 
     const updateMouse = (e) => {
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -56,31 +56,54 @@ class World {
       raycaster.setFromCamera(mouse, camera);
       const hits = raycaster.intersectObjects(marbles);
       if (hits.length > 0) {
-        draggedObject = hits[0].object;
+        draggedMarble = hits[0].object;
         camera.getWorldDirection(cameraDir);
-        dragPlane.setFromNormalAndCoplanarPoint(cameraDir, draggedObject.position);
+        dragPlane.setFromNormalAndCoplanarPoint(cameraDir, draggedMarble.position);
         raycaster.ray.intersectPlane(dragPlane, planeIntersect);
-        offset.copy(draggedObject.position).sub(planeIntersect);
+        offset.copy(draggedMarble.position).sub(planeIntersect);
+        canvas.style.cursor = 'grabbing';
+      } else {
+        isRotating = true;
         canvas.style.cursor = 'grabbing';
       }
     });
 
     canvas.addEventListener('mousemove', (e) => {
-      updateMouse(e);
-      raycaster.setFromCamera(mouse, camera);
-      if (draggedObject) {
+      if (draggedMarble) {
+        updateMouse(e);
+        raycaster.setFromCamera(mouse, camera);
         raycaster.ray.intersectPlane(dragPlane, planeIntersect);
-        draggedObject.position.copy(planeIntersect).add(offset);
+        draggedMarble.position.copy(planeIntersect).add(offset);
+      } else if (isRotating) {
+        yaw -= e.movementX * 0.004;
+        pitch -= e.movementY * 0.004;
+        pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
+        camera.rotation.set(pitch, yaw, 0, 'YXZ');
       } else {
+        updateMouse(e);
+        raycaster.setFromCamera(mouse, camera);
         const hits = raycaster.intersectObjects(marbles);
         canvas.style.cursor = hits.length > 0 ? 'grab' : 'default';
       }
     });
 
     canvas.addEventListener('mouseup', () => {
-      draggedObject = null;
+      draggedMarble = null;
+      isRotating = false;
       canvas.style.cursor = 'default';
     });
+
+    canvas.addEventListener('mouseleave', () => {
+      draggedMarble = null;
+      isRotating = false;
+      canvas.style.cursor = 'default';
+    });
+
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      camera.getWorldDirection(moveDir);
+      camera.position.addScaledVector(moveDir, -e.deltaY * 0.05);
+    }, { passive: false });
   }
 
   render() {

@@ -25,11 +25,11 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function createMarbles(count = 25) {
+function createMarbles(count = 400) {
   const marbles = [];
 
   for (let i = 0; i < count; i++) {
-    const radius = rand(0.3, 1.0);
+    const radius = rand(0.3, 1.2);
     const geometry = pick(GEOM_FACTORIES)(radius);
 
     const material = new MeshStandardMaterial({
@@ -39,7 +39,17 @@ function createMarbles(count = 25) {
     });
 
     const marble = new Mesh(geometry, material);
-    marble.position.set(rand(-15, 15), rand(-10, 10), rand(-8, 3));
+
+    // Uniform spherical distribution — you're always at the center
+    const theta = rand(0, Math.PI * 2);
+    const phi = Math.acos(rand(-1, 1));
+    const r = rand(5, 45);
+    marble.position.set(
+      r * Math.sin(phi) * Math.cos(theta),
+      r * Math.sin(phi) * Math.sin(theta),
+      r * Math.cos(phi),
+    );
+
     marble.rotation.set(
       rand(0, Math.PI * 2),
       rand(0, Math.PI * 2),
