@@ -1,4 +1,7 @@
-import { Raycaster, Vector2, Vector3, Plane } from 'three';
+import {
+  Raycaster, Vector2, Vector3, Plane,
+  RingGeometry, MeshBasicMaterial, Mesh, Color, DoubleSide,
+} from 'three';
 import { createCamera } from "../components/camera";
 import { createMarbles } from "../components/marbles";
 import { createScene } from "../components/scene";
@@ -11,6 +14,62 @@ let camera;
 let scene;
 let renderer;
 let loop;
+
+// Color stops: very close → close → far → very far
+const PROXIMITY_STOPS = [
+  { dist: 0,  color: new Color('#4ade80') },  // green
+  { dist: 15, color: new Color('#facc15') },  // yellow
+  { dist: 35, color: new Color('#f97316') },  // orange
+  { dist: 60, color: new Color('#ef4444') },  // red
+];
+
+function getProximityColor(dist) {
+  if (dist <= PROXIMITY_STOPS[0].dist) return PROXIMITY_STOPS[0].color.clone();
+  for (let i = 1; i < PROXIMITY_STOPS.length; i++) {
+    const prev = PROXIMITY_STOPS[i - 1];
+    const next = PROXIMITY_STOPS[i];
+    if (dist <= next.dist) {
+      const t = (dist - prev.dist) / (next.dist - prev.dist);
+      return prev.color.clone().lerp(next.color, t);
+    }
+  }
+  return PROXIMITY_STOPS[PROXIMITY_STOPS.length - 1].color.clone();
+}
+
+function spawnHalo(position, color) {
+  const geometry = new RingGeometry(0.45, 0.62, 40);
+  const material = new MeshBasicMaterial({
+    color,
+    transparent: true,
+    opacity: 0.9,
+    side: DoubleSide,
+    depthWrite: false,
+  });
+  const halo = new Mesh(geometry, material);
+  halo.position.copy(position);
+
+  let elapsed = 0;
+  const duration = 1.1;
+
+  halo.tick = (delta) => {
+    elapsed += delta;
+    const t = elapsed / duration;
+    material.opacity = 0.9 * (1 - t);
+    halo.scale.setScalar(1 + t * 2.5);
+    halo.quaternion.copy(camera.quaternion);
+
+    if (elapsed >= duration) {
+      scene.remove(halo);
+      const idx = loop.updatables.indexOf(halo);
+      if (idx !== -1) loop.updatables.splice(idx, 1);
+      geometry.dispose();
+      material.dispose();
+    }
+  };
+
+  scene.add(halo);
+  loop.updatables.push(halo);
+}
 
 class World {
   constructor(container) {
@@ -27,26 +86,26 @@ class World {
     scene.add(ambient, directional, ...marbles);
 
     const chosenMarble = marbles[Math.floor(Math.random() * marbles.length)];
+    const chosenPosition = chosenMarble.position; // live reference, updates if dragged
 
     const tooltip = document.createElement('div');
     tooltip.className = 'marble-tooltip';
     tooltip.textContent = 'you found me!';
     container.appendChild(tooltip);
 
-    this._setupInteractions(renderer.domElement, marbles, chosenMarble, tooltip);
+    this._setupInteractions(renderer.domElement, marbles, chosenMarble, chosenPosition, tooltip);
 
     const resizer = new Resizer(camera, container, renderer);
     resizer.onResize = () => this.render();
   }
 
-  _setupInteractions(canvas, marbles, chosenMarble, tooltip) {
+  _setupInteractions(canvas, marbles, chosenMarble, chosenPosition, tooltip) {
     const raycaster = new Raycaster();
     const mouse = new Vector2();
     const dragPlane = new Plane();
     const planeIntersect = new Vector3();
     const offset = new Vector3();
     const cameraDir = new Vector3();
-    const moveDir = new Vector3();
     const projectedPos = new Vector3();
 
     let draggedMarble = null;
@@ -163,11 +222,18 @@ class World {
       const dy = e.clientY - mouseDownY;
       const wasClick = Math.sqrt(dx * dx + dy * dy) < 5;
 
-      if (wasClick && draggedMarble === chosenMarble && !tooltipVisible) {
-        tooltipVisible = true;
-        tooltip.classList.add('visible');
-        updateTooltipPosition();
-        startFocus();
+      if (wasClick && draggedMarble) {
+        if (draggedMarble === chosenMarble) {
+          if (!tooltipVisible) {
+            tooltipVisible = true;
+            tooltip.classList.add('visible');
+            updateTooltipPosition();
+            startFocus();
+          }
+        } else {
+          const dist = draggedMarble.position.distanceTo(chosenPosition);
+          spawnHalo(draggedMarble.position.clone(), getProximityColor(dist));
+        }
       }
 
       draggedMarble = null;
@@ -181,11 +247,6 @@ class World {
       canvas.style.cursor = 'default';
     });
 
-    canvas.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      camera.getWorldDirection(moveDir);
-      camera.position.addScaledVector(moveDir, -e.deltaY * 0.05);
-    }, { passive: false });
   }
 
   render() {
